@@ -397,7 +397,11 @@
       submitBtn.classList.add('opacity-50');
       
       // Send email
-      emailjs.sendForm('service_yuilafg', 'template_c8l02de', this)
+      // Cambiar esta línea:
+      emailjs.sendForm('service_yuilafg', 'template_23136ds', this)
+      
+      // Por el Template ID correcto que obtengas del dashboard:
+      emailjs.sendForm('service_yuilafg', 'template_23136ds', this)
         .then(function(response) {
           console.log('SUCCESS!', response.status, response.text);
           
