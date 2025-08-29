@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Tools - HOPSiEdev</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .glass-border {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .glass-card {
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .glass-input {
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .glass-input:focus {
+            border-color: rgba(139, 92, 246, 0.4);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .tool-card {
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .active-tool {
+            background: rgba(139, 92, 246, 0.1);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-black text-gray-100 font-sans antialiased">
+    <!-- Navbar -->
+    <header class="fixed w-full z-50 glass-border">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-violet-500 rounded-md"></div>
+                <span class="font-medium text-white">HOPSiEdev Tools</span>
+            </div>
+            <nav class="flex items-center gap-8 text-sm text-gray-400">
+                <a href="index.html" class="hover:text-white transition-colors">Portfolio</a>
+                <a href="#tools" class="hover:text-white transition-colors">Tools</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="pt-20 min-h-screen">
+        <div class="max-w-7xl mx-auto px-6 py-8">
+            <!-- Header -->
+            <div class="text-center mb-12 fade-in">
+                <h1 class="text-4xl font-bold text-white mb-4">Developer Tools</h1>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    Una colección de herramientas útiles para desarrolladores. Todas funcionan localmente en tu
+                    navegador.
+                </p>
+            </div>
+
+            <div class="flex gap-8">
+                <!-- Sidebar -->
+                <div class="w-80 flex-shrink-0">
+                    <div class="glass-card p-6 rounded-xl sticky top-24">
+                        <h3 class="text-lg font-semibold text-white mb-4">Herramientas</h3>
+                        <div class="space-y-2" id="tool-list">
+                            <!-- Tools will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex-1">
+                    <div id="tool-content" class="glass-card p-8 rounded-xl min-h-[600px]">
+                        <!-- Tool content will be loaded here -->
+                        <div class="text-center py-20">
+                            <div
+                                class="w-16 h-16 bg-violet-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="wrench" class="w-8 h-8 text-violet-400"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-white mb-2">Selecciona una herramienta</h3>
+                            <p class="text-gray-400">Elige una herramienta del menú lateral para comenzar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tool definitions
+        const tools = [
+            {
+                id: 'base64-converter',
+                name: 'Base64 Converter',
+                icon: 'code',
+                description: 'Codifica y decodifica strings en Base64'
+            },
+            {
+                id: 'uuid-generator',
+                name: 'UUID Generator',
+                icon: 'hash',
+                description: 'Genera UUIDs únicos'
+            },
+            {
+                id: 'json-formatter',
+                name: 'JSON Formatter',
+                icon: 'braces',
+                description: 'Formatea y valida JSON'
+            },
+            {
+                id: 'url-encoder',
+                name: 'URL Encoder/Decoder',
+                icon: 'link',
+                description: 'Codifica y decodifica URLs'
+            },
+            {
+                id: 'hash-generator',
+                name: 'Hash Generator',
+                icon: 'shield',
+                description: 'Genera hashes MD5, SHA1, SHA256'
+            },
+            {
+                id: 'password-generator',
+                name: 'Password Generator',
+                icon: 'key',
+                description: 'Genera contraseñas seguras'
+            },
+            {
+                id: 'color-converter',
+                name: 'Color Converter',
+                icon: 'palette',
+                description: 'Convierte entre formatos de color'
+            },
+            {
+                id: 'timestamp-converter',
+                name: 'Timestamp Converter',
+                icon: 'clock',
+                description: 'Convierte timestamps Unix'
+            },
+            {
+                id: 'qr-generator',
+                name: 'QR Code Generator',
+                icon: 'qr-code',
+                description: 'Genera códigos QR'
+            },
+            {
+                id: 'text-diff',
+                name: 'Text Diff',
+                icon: 'git-compare',
+                description: 'Compara textos línea por línea'
+            },
+            {
+                id: 'lorem-ipsum',
+                name: 'Lorem Ipsum Generator',
+                icon: 'type',
+                description: 'Genera texto Lorem Ipsum'
+            },
+            {
+                id: 'regex-tester',
+                name: 'Regex Tester',
+                icon: 'search',
+                description: 'Prueba expresiones regulares'
+            },
+            {
+                id: 'text-case-converter',
+                name: 'Text Case Converter',
+                icon: 'text',
+                description: 'Convierte texto entre diferentes casos'
+            },
+            {
+                id: 'ip-converter',
+                name: 'IP Address Converter',
+                icon: 'globe',
+                description: 'Convierte IPs entre formatos'
+            },
+            {
+                id: 'subnet-calculator',
+                name: 'Subnet Calculator',
+                icon: 'network',
+                description: 'Calcula subredes IPv4'
+            },
+            {
+                id: 'ip-geolocation',
+                name: 'IP Geolocation',
+                icon: 'map-pin',
+                description: 'Obtiene ubicación de IP'
+            }
+        ];
+
+        let currentTool = null;
+
+        // Initialize the app
+        function init() {
+            renderToolList();
+            lucide.createIcons();
+        }
+
+        // Render tool list in sidebar
+        function renderToolList() {
+            const toolList = document.getElementById('tool-list');
+            toolList.innerHTML = tools.map(tool => `
+                <button 
+                    class="w-full text-left p-3 rounded-lg tool-card glass-border hover:bg-white/5 transition-all"
+                    onclick="loadTool('${tool.id}')"
+                    id="tool-btn-${tool.id}"
+                >
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="${tool.icon}" class="w-4 h-4 text-violet-400"></i>
+                        <div>
+                            <div class="font-medium text-white text-sm">${tool.name}</div>
+                            <div class="text-xs text-gray-400">${tool.description}</div>
+                        </div>
+                    </div>
+                </button>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        // Load a specific tool
+        function loadTool(toolId) {
+            // Update active state
+            document.querySelectorAll('.tool-card').forEach(btn => {
+                btn.classList.remove('active-tool');
+            });
+            document.getElementById(`tool-btn-${toolId}`).classList.add('active-tool');
+
+            currentTool = toolId;
+            const content = document.getElementById('tool-content');
+
+            switch (toolId) {
+                case 'base64-converter':
+                    content.innerHTML = getBase64ConverterHTML();
+                    break;
+                case 'uuid-generator':
+                    content.innerHTML = getUUIDGeneratorHTML();
+                    break;
+                case 'json-formatter':
+                    content.innerHTML = getJSONFormatterHTML();
+                    break;
+                case 'url-encoder':
+                    content.innerHTML = getURLEncoderHTML();
+                    break;
+                case 'hash-generator':
+                    content.innerHTML = getHashGeneratorHTML();
+                    break;
+                case 'password-generator':
+                    content.innerHTML = getPasswordGeneratorHTML();
+                    break;
+                case 'color-converter':
+                    content.innerHTML = getColorConverterHTML();
+                    break;
+                case 'timestamp-converter':
+                    content.innerHTML = getTimestampConverterHTML();
+                    break;
+                case 'qr-generator':
+                    content.innerHTML = getQRGeneratorHTML();
+                    break;
+                case 'text-diff':
+                    content.innerHTML = getTextDiffHTML();
+                    break;
+                case 'lorem-ipsum':
+                    content.innerHTML = getLoremIpsumHTML();
+                    break;
+                case 'regex-tester':
+                    content.innerHTML = getRegexTesterHTML();
+                    break;
+                case 'text-case-converter':
+                    content.innerHTML = getTextCaseConverterHTML();
+                    break;
+                case 'ip-converter':
+                    content.innerHTML = getIPConverterHTML();
+                    break;
+                case 'subnet-calculator':
+                    content.innerHTML = getSubnetCalculatorHTML();
+                    break;
+                case 'ip-geolocation':
+                    content.innerHTML = getIPGeolocationHTML();
+                    break;
+                default:
+                    content.innerHTML = '<p class="text-gray-400">Herramienta no encontrada</p>';
+            }
+
+            lucide.createIcons();
+            
+            // Auto-load functionality for specific tools
+            if (toolId === 'ip-geolocation') {
+                // Auto-load user's IP when geolocation tool is opened
+                setTimeout(() => {
+                    if (typeof autoLoadMyIP === 'function') {
+                        autoLoadMyIP();
+                    }
+                }, 500);
+            } else if (toolId === 'color-converter') {
+                // Initialize color converter with default color
+                setTimeout(() => {
+                    if (document.getElementById('color-picker')) {
+                        updateColorFromPicker();
+                    }
+                }, 100);
+            }
+        }
+
+        // Tool HTML generators
+        function getBase64ConverterHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="code" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Base64 Converter</h2>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Texto a codificar</label>
+                            <textarea 
+                                id="base64-input" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="Ingresa el texto aquí..."
+                                oninput="encodeBase64()"
+                            ></textarea>
+                            <button 
+                                onclick="copyToClipboard('base64-output')"
+                                class="mt-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Copiar Base64
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Base64 codificado</label>
+                            <textarea 
+                                id="base64-output" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="El resultado aparecerá aquí..."
+                                readonly
+                            ></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Base64 a decodificar</label>
+                            <textarea 
+                                id="base64-decode-input" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="Ingresa el Base64 aquí..."
+                                oninput="decodeBase64()"
+                            ></textarea>
+                            <button 
+                                onclick="copyToClipboard('base64-decode-output')"
+                                class="mt-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Copiar Texto
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Texto decodificado</label>
+                            <textarea 
+                                id="base64-decode-output" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="El resultado aparecerá aquí..."
+                                readonly
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getUUIDGeneratorHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="hash" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">UUID Generator</h2>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="flex items-center gap-4 mb-4">
+                            <label class="text-sm font-medium text-gray-300">Cantidad:</label>
+                            <input 
+                                type="number" 
+                                id="uuid-count" 
+                                value="1" 
+                                min="1" 
+                                max="100"
+                                class="w-20 p-2 rounded-lg glass-input text-white focus:outline-none"
+                            >
+                            <button 
+                                onclick="generateUUIDs()"
+                                class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Generar UUIDs
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">UUIDs generados</label>
+                        <textarea 
+                            id="uuid-output" 
+                            class="w-full h-64 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none font-mono text-sm"
+                            placeholder="Los UUIDs aparecerán aquí..."
+                            readonly
+                        ></textarea>
+                        <button 
+                            onclick="copyToClipboard('uuid-output')"
+                            class="mt-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Copiar UUIDs
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getJSONFormatterHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="braces" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">JSON Formatter</h2>
+                    </div>
+                    
+                    <div class="mb-4 flex items-center gap-4">
+                        <label class="text-sm font-medium text-gray-300">Espacios de indentación:</label>
+                        <input 
+                            type="number" 
+                            id="json-indent" 
+                            value="2" 
+                            min="0" 
+                            max="8"
+                            class="w-16 p-2 rounded-lg glass-input text-white focus:outline-none"
+                        >
+                        <button 
+                            onclick="formatJSON()"
+                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Formatear JSON
+                        </button>
+                        <button 
+                            onclick="minifyJSON()"
+                            class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Minificar JSON
+                        </button>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">JSON de entrada</label>
+                            <textarea 
+                                id="json-input" 
+                                class="w-full h-96 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none font-mono text-sm"
+                                placeholder='{"ejemplo": "Pega tu JSON aquí..."}'
+                            ></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">JSON formateado</label>
+                            <textarea 
+                                id="json-output" 
+                                class="w-full h-96 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none font-mono text-sm"
+                                placeholder="El JSON formateado aparecerá aquí..."
+                                readonly
+                            ></textarea>
+                            <button 
+                                onclick="copyToClipboard('json-output')"
+                                class="mt-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Copiar JSON
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getURLEncoderHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="link" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">URL Encoder/Decoder</h2>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">URL a codificar</label>
+                            <textarea 
+                                id="url-input" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="https://ejemplo.com/búsqueda?q=texto con espacios"
+                                oninput="encodeURL()"
+                            ></textarea>
+                            <button 
+                                onclick="copyToClipboard('url-output')"
+                                class="mt-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Copiar URL Codificada
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">URL codificada</label>
+                            <textarea 
+                                id="url-output" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="La URL codificada aparecerá aquí..."
+                                readonly
+                            ></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">URL a decodificar</label>
+                            <textarea 
+                                id="url-decode-input" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="https%3A//ejemplo.com/b%C3%BAsqueda%3Fq%3Dtexto%20con%20espacios"
+                                oninput="decodeURL()"
+                            ></textarea>
+                            <button 
+                                onclick="copyToClipboard('url-decode-output')"
+                                class="mt-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Copiar URL Decodificada
+                            </button>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">URL decodificada</label>
+                            <textarea 
+                                id="url-decode-output" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="La URL decodificada aparecerá aquí..."
+                                readonly
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getHashGeneratorHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="shield" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Hash Generator</h2>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Texto a hashear</label>
+                        <textarea 
+                            id="hash-input" 
+                            class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                            placeholder="Ingresa el texto aquí..."
+                            oninput="generateHashes()"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">MD5</label>
+                            <div class="flex gap-2">
+                                <input 
+                                    id="hash-md5" 
+                                    class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono text-sm"
+                                    readonly
+                                    placeholder="MD5 hash aparecerá aquí..."
+                                >
+                                <button 
+                                    onclick="copyToClipboard('hash-md5')"
+                                    class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">SHA-1</label>
+                            <div class="flex gap-2">
+                                <input 
+                                    id="hash-sha1" 
+                                    class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono text-sm"
+                                    readonly
+                                    placeholder="SHA-1 hash aparecerá aquí..."
+                                >
+                                <button 
+                                    onclick="copyToClipboard('hash-sha1')"
+                                    class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">SHA-256</label>
+                            <div class="flex gap-2">
+                                <input 
+                                    id="hash-sha256" 
+                                    class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono text-sm"
+                                    readonly
+                                    placeholder="SHA-256 hash aparecerá aquí..."
+                                >
+                                <button 
+                                    onclick="copyToClipboard('hash-sha256')"
+                                    class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getPasswordGeneratorHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="key" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Password Generator</h2>
+                    </div>
+                    
+                    <div class="mb-6 space-y-4">
+                        <div class="flex items-center gap-4">
+                            <label class="text-sm font-medium text-gray-300">Longitud:</label>
+                            <input 
+                                type="range" 
+                                id="password-length" 
+                                min="4" 
+                                max="128" 
+                                value="16"
+                                class="flex-1 max-w-xs"
+                                oninput="updatePasswordLength()"
+                            >
+                            <span id="password-length-display" class="text-white font-mono">16</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="flex items-center gap-2 text-sm text-gray-300">
+                                <input type="checkbox" id="include-uppercase" checked class="rounded">
+                                Mayúsculas (A-Z)
+                            </label>
+                            <label class="flex items-center gap-2 text-sm text-gray-300">
+                                <input type="checkbox" id="include-lowercase" checked class="rounded">
+                                Minúsculas (a-z)
+                            </label>
+                            <label class="flex items-center gap-2 text-sm text-gray-300">
+                                <input type="checkbox" id="include-numbers" checked class="rounded">
+                                Números (0-9)
+                            </label>
+                            <label class="flex items-center gap-2 text-sm text-gray-300">
+                                <input type="checkbox" id="include-symbols" class="rounded">
+                                Símbolos (!@#$...)
+                            </label>
+                        </div>
+                        
+                        <button 
+                            onclick="generatePassword()"
+                            class="px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-medium transition-colors"
+                        >
+                            Generar Contraseña
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Contraseña generada</label>
+                        <div class="flex gap-2">
+                            <input 
+                                id="password-output" 
+                                class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono text-lg"
+                                readonly
+                                placeholder="La contraseña aparecerá aquí..."
+                            >
+                            <button 
+                                onclick="copyToClipboard('password-output')"
+                                class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                            >
+                                Copiar
+                            </button>
+                        </div>
+                        
+                        <div id="password-strength" class="mt-4 p-3 rounded-lg glass-border">
+                            <div class="text-sm text-gray-300 mb-2">Fortaleza de la contraseña:</div>
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 bg-gray-700 rounded-full h-2">
+                                    <div id="strength-bar" class="h-2 rounded-full transition-all duration-300"></div>
+                                </div>
+                                <span id="strength-text" class="text-sm font-medium">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getColorConverterHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="palette" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Color Converter</h2>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Selector de color</label>
+                        <div class="flex items-center gap-4">
+                            <input 
+                                type="color" 
+                                id="color-picker" 
+                                value="#3b82f6"
+                                class="w-16 h-16 rounded-lg border-2 border-gray-600 cursor-pointer"
+                                onchange="updateColorFromPicker()"
+                            >
+                            <div id="color-preview" class="w-32 h-16 rounded-lg border-2 border-gray-600" style="background-color: #3b82f6;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">HEX</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="color-hex" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        placeholder="#3b82f6"
+                                        oninput="updateColorFromHex()"
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('color-hex')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">RGB</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="color-rgb" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        placeholder="rgb(59, 130, 246)"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('color-rgb')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">HSL</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="color-hsl" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        placeholder="hsl(217, 91%, 60%)"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('color-hsl')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">RGBA</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="color-rgba" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        placeholder="rgba(59, 130, 246, 1)"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('color-rgba')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">HSLA</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="color-hsla" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        placeholder="hsla(217, 91%, 60%, 1)"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('color-hsla')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">CSS Filter</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="color-filter" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono text-xs"
+                                        placeholder="filter: ..."
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('color-filter')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTimestampConverterHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="clock" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Timestamp Converter</h2>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <button 
+                            onclick="setCurrentTimestamp()"
+                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Usar Timestamp Actual
+                        </button>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Timestamp Unix (segundos)</label>
+                            <input 
+                                id="timestamp-seconds" 
+                                class="w-full p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                placeholder="1640995200"
+                                oninput="convertFromTimestamp()"
+                            >
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Timestamp Unix (milisegundos)</label>
+                            <input 
+                                id="timestamp-milliseconds" 
+                                class="w-full p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                placeholder="1640995200000"
+                                oninput="convertFromTimestampMs()"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Fecha y hora local</label>
+                            <div class="flex gap-2">
+                                <input 
+                                    id="datetime-local" 
+                                    class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                    readonly
+                                    placeholder="La fecha aparecerá aquí..."
+                                >
+                                <button 
+                                    onclick="copyToClipboard('datetime-local')"
+                                    class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Fecha y hora UTC</label>
+                            <div class="flex gap-2">
+                                <input 
+                                    id="datetime-utc" 
+                                    class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                    readonly
+                                    placeholder="La fecha UTC aparecerá aquí..."
+                                >
+                                <button 
+                                    onclick="copyToClipboard('datetime-utc')"
+                                    class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">ISO 8601</label>
+                            <div class="flex gap-2">
+                                <input 
+                                    id="datetime-iso" 
+                                    class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                    readonly
+                                    placeholder="La fecha ISO aparecerá aquí..."
+                                >
+                                <button 
+                                    onclick="copyToClipboard('datetime-iso')"
+                                    class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Copiar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getQRGeneratorHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="qr-code" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">QR Code Generator</h2>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Texto o URL</label>
+                            <textarea 
+                                id="qr-input" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                                placeholder="Ingresa el texto o URL para generar el código QR..."
+                                oninput="generateQR()"
+                            ></textarea>
+                            
+                            <div class="mt-4 space-y-3">
+                                <div class="flex items-center gap-4">
+                                    <label class="text-sm font-medium text-gray-300">Tamaño:</label>
+                                    <select id="qr-size" class="p-2 rounded-lg glass-input text-white focus:outline-none" onchange="generateQR()">
+                                        <option value="200">200x200</option>
+                                        <option value="300" selected>300x300</option>
+                                        <option value="400">400x400</option>
+                                        <option value="500">500x500</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="flex items-center gap-4">
+                                    <label class="text-sm font-medium text-gray-300">Color:</label>
+                                    <input 
+                                        type="color" 
+                                        id="qr-color" 
+                                        value="#000000"
+                                        class="w-12 h-8 rounded border-2 border-gray-600 cursor-pointer"
+                                        onchange="generateQR()"
+                                    >
+                                </div>
+                                
+                                <div class="flex items-center gap-4">
+                                    <label class="text-sm font-medium text-gray-300">Fondo:</label>
+                                    <input 
+                                        type="color" 
+                                        id="qr-background" 
+                                        value="#ffffff"
+                                        class="w-12 h-8 rounded border-2 border-gray-600 cursor-pointer"
+                                        onchange="generateQR()"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Código QR generado</label>
+                            <div id="qr-output" class="inline-block p-4 rounded-lg glass-border bg-white">
+                                <div class="w-64 h-64 flex items-center justify-center text-gray-400">
+                                    <div class="text-center">
+                                        <i data-lucide="qr-code" class="w-16 h-16 mx-auto mb-2 opacity-50"></i>
+                                        <p class="text-sm">El código QR aparecerá aquí</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 space-x-2">
+                                <button 
+                                    onclick="downloadQR()"
+                                    class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Descargar PNG
+                                </button>
+                                <button 
+                                    onclick="copyQRToClipboard()"
+                                    class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg text-sm font-medium transition-colors"
+                                >
+                                    Copiar Imagen
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTextDiffHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="git-compare" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Text Diff</h2>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <button 
+                            onclick="compareTexts()"
+                            class="px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-medium transition-colors"
+                        >
+                            Comparar Textos
+                        </button>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Texto Original</label>
+                            <textarea 
+                                id="diff-text1" 
+                                class="w-full h-64 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none font-mono text-sm"
+                                placeholder="Pega el primer texto aquí..."
+                            ></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Texto Modificado</label>
+                            <textarea 
+                                id="diff-text2" 
+                                class="w-full h-64 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none font-mono text-sm"
+                                placeholder="Pega el segundo texto aquí..."
+                            ></textarea>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Diferencias</label>
+                        <div id="diff-output" class="w-full min-h-64 p-3 rounded-lg glass-input font-mono text-sm overflow-auto">
+                            <div class="text-gray-400 text-center py-8">
+                                Las diferencias aparecerán aquí después de comparar los textos
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 text-sm text-gray-400">
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <div class="w-4 h-4 bg-red-500/30 border border-red-500 rounded"></div>
+                                <span>Líneas eliminadas</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-4 h-4 bg-green-500/30 border border-green-500 rounded"></div>
+                                <span>Líneas agregadas</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-4 h-4 bg-gray-500/30 border border-gray-500 rounded"></div>
+                                <span>Sin cambios</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getLoremIpsumHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="type" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Lorem Ipsum Generator</h2>
+                    </div>
+                    
+                    <div class="mb-6 space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-sm font-medium text-gray-300">Tipo:</label>
+                                <select id="lorem-type" class="w-full p-2 rounded-lg glass-input text-white focus:outline-none">
+                                    <option value="paragraphs">Párrafos</option>
+                                    <option value="words">Palabras</option>
+                                    <option value="sentences">Oraciones</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-sm font-medium text-gray-300">Cantidad:</label>
+                                <input 
+                                    type="number" 
+                                    id="lorem-count" 
+                                    value="3" 
+                                    min="1" 
+                                    max="50"
+                                    class="w-full p-2 rounded-lg glass-input text-white focus:outline-none"
+                                >
+                            </div>
+                        </div>
+                        
+                        <button 
+                            onclick="generateLoremIpsum()"
+                            class="px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-medium transition-colors"
+                        >
+                            Generar Lorem Ipsum
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Texto generado</label>
+                        <textarea 
+                            id="lorem-output" 
+                            class="w-full h-96 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                            placeholder="El texto Lorem Ipsum aparecerá aquí..."
+                            readonly
+                        ></textarea>
+                        <button 
+                            onclick="copyToClipboard('lorem-output')"
+                            class="mt-2 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                        >
+                            Copiar Texto
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getRegexTesterHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="search" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Regex Tester</h2>
+                    </div>
+                    
+                    <div class="mb-6 space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Expresión regular</label>
+                            <div class="flex gap-2">
+                                <input 
+                                    id="regex-pattern" 
+                                    class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                    placeholder="Ingresa tu expresión regular aquí..."
+                                    oninput="testRegex()"
+                                >
+                                <div class="flex items-center gap-2">
+                                    <label class="flex items-center gap-1 text-sm text-gray-300">
+                                        <input type="checkbox" id="regex-global" onchange="testRegex()" class="rounded">
+                                        g
+                                    </label>
+                                    <label class="flex items-center gap-1 text-sm text-gray-300">
+                                        <input type="checkbox" id="regex-ignorecase" onchange="testRegex()" class="rounded">
+                                        i
+                                    </label>
+                                    <label class="flex items-center gap-1 text-sm text-gray-300">
+                                        <input type="checkbox" id="regex-multiline" onchange="testRegex()" class="rounded">
+                                        m
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Texto de prueba</label>
+                            <textarea 
+                                id="regex-test-text" 
+                                class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none font-mono"
+                                placeholder="Ingresa el texto para probar la expresión regular..."
+                                oninput="testRegex()"
+                            ></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Resultado</label>
+                            <div id="regex-result" class="p-3 rounded-lg glass-border min-h-16">
+                                <div class="text-gray-400">Los resultados aparecerán aquí</div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Coincidencias</label>
+                            <div id="regex-matches" class="p-3 rounded-lg glass-border min-h-16">
+                                <div class="text-gray-400">Las coincidencias aparecerán aquí</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getTextCaseConverterHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="text" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Text Case Converter</h2>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Texto de entrada</label>
+                        <textarea 
+                            id="case-input" 
+                            class="w-full h-32 p-3 rounded-lg glass-input text-white placeholder-gray-500 focus:outline-none resize-none"
+                            placeholder="Ingresa el texto aquí..."
+                            oninput="convertTextCase()"
+                        ></textarea>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">MAYÚSCULAS</label>
+                                <div class="flex gap-2">
+                                    <textarea 
+                                        id="case-uppercase" 
+                                        class="flex-1 h-20 p-3 rounded-lg glass-input text-white focus:outline-none resize-none"
+                                        readonly
+                                    ></textarea>
+                                    <button 
+                                        onclick="copyToClipboard('case-uppercase')"
+                                        class="px-3 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">minúsculas</label>
+                                <div class="flex gap-2">
+                                    <textarea 
+                                        id="case-lowercase" 
+                                        class="flex-1 h-20 p-3 rounded-lg glass-input text-white focus:outline-none resize-none"
+                                        readonly
+                                    ></textarea>
+                                    <button 
+                                        onclick="copyToClipboard('case-lowercase')"
+                                        class="px-3 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Título (Title Case)</label>
+                                <div class="flex gap-2">
+                                    <textarea 
+                                        id="case-title" 
+                                        class="flex-1 h-20 p-3 rounded-lg glass-input text-white focus:outline-none resize-none"
+                                        readonly
+                                    ></textarea>
+                                    <button 
+                                        onclick="copyToClipboard('case-title')"
+                                        class="px-3 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Oración (Sentence case)</label>
+                                <div class="flex gap-2">
+                                    <textarea 
+                                        id="case-sentence" 
+                                        class="flex-1 h-20 p-3 rounded-lg glass-input text-white focus:outline-none resize-none"
+                                        readonly
+                                    ></textarea>
+                                    <button 
+                                        onclick="copyToClipboard('case-sentence')"
+                                        class="px-3 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">camelCase</label>
+                                <div class="flex gap-2">
+                                    <textarea 
+                                        id="case-camel" 
+                                        class="flex-1 h-20 p-3 rounded-lg glass-input text-white focus:outline-none resize-none"
+                                        readonly
+                                    ></textarea>
+                                    <button 
+                                        onclick="copyToClipboard('case-camel')"
+                                        class="px-3 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">kebab-case</label>
+                                <div class="flex gap-2">
+                                    <textarea 
+                                        id="case-kebab" 
+                                        class="flex-1 h-20 p-3 rounded-lg glass-input text-white focus:outline-none resize-none"
+                                        readonly
+                                    ></textarea>
+                                    <button 
+                                        onclick="copyToClipboard('case-kebab')"
+                                        class="px-3 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getIPConverterHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="globe" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">IP Address Converter</h2>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Dirección IP</label>
+                        <input 
+                            id="ip-input" 
+                            class="w-full p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                            placeholder="192.168.1.1"
+                            oninput="convertIP()"
+                        >
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Decimal</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="ip-decimal" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                        placeholder="3232235777"
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('ip-decimal')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Hexadecimal</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="ip-hex" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                        placeholder="0xC0A80101"
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('ip-hex')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Binario</label>
+                                <div class="flex gap-2">
+                                    <textarea 
+                                        id="ip-binary" 
+                                        class="flex-1 h-20 p-3 rounded-lg glass-input text-white focus:outline-none font-mono text-sm resize-none"
+                                        readonly
+                                        placeholder="11000000.10101000.00000001.00000001"
+                                    ></textarea>
+                                    <button 
+                                        onclick="copyToClipboard('ip-binary')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Octal</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="ip-octal" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                        placeholder="030052000401"
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('ip-octal')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 rounded-lg glass-border">
+                        <h3 class="text-lg font-medium text-white mb-3">Información de la IP</h3>
+                        <div id="ip-info" class="space-y-2 text-sm">
+                            <div class="text-gray-400">Ingresa una dirección IP válida para ver la información</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getSubnetCalculatorHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="network" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">Subnet Calculator</h2>
+                    </div>
+                    
+                    <div class="mb-6 grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Dirección IP</label>
+                            <input 
+                                id="subnet-ip" 
+                                class="w-full p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                placeholder="192.168.1.0"
+                                oninput="calculateSubnet()"
+                            >
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">CIDR / Máscara</label>
+                            <input 
+                                id="subnet-mask" 
+                                class="w-full p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                placeholder="/24 o 255.255.255.0"
+                                oninput="calculateSubnet()"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Dirección de Red</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="subnet-network" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('subnet-network')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Dirección de Broadcast</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="subnet-broadcast" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('subnet-broadcast')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Máscara de Subred</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="subnet-netmask" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('subnet-netmask')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Primera IP Utilizable</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="subnet-first" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('subnet-first')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Última IP Utilizable</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="subnet-last" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('subnet-last')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Total de Hosts</label>
+                                <div class="flex gap-2">
+                                    <input 
+                                        id="subnet-hosts" 
+                                        class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                        readonly
+                                    >
+                                    <button 
+                                        onclick="copyToClipboard('subnet-hosts')"
+                                        class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 p-4 rounded-lg glass-border">
+                        <h3 class="text-lg font-medium text-white mb-3">Información de la Subred</h3>
+                        <div id="subnet-info" class="grid md:grid-cols-2 gap-4 text-sm">
+                            <div class="text-gray-400">Ingresa una IP y máscara válidas</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getIPGeolocationHTML() {
+            return `
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <i data-lucide="map-pin" class="w-6 h-6 text-violet-400"></i>
+                        <h2 class="text-2xl font-bold text-white">IP Geolocation</h2>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <div class="flex gap-4 mb-4">
+                            <input 
+                                id="geo-ip-input" 
+                                class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                placeholder="Ingresa una dirección IP (ej: 8.8.8.8)"
+                            >
+                            <button 
+                                onclick="lookupIPGeolocation()"
+                                class="px-6 py-3 bg-violet-600 hover:bg-violet-700 rounded-lg font-medium transition-colors"
+                            >
+                                Buscar Ubicación
+                            </button>
+                            <button 
+                                onclick="getMyIP()"
+                                class="px-6 py-3 bg-gray-600 hover:bg-gray-700 rounded-lg font-medium transition-colors"
+                            >
+                                Mi IP
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="geo-loading" class="hidden text-center py-8">
+                        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-violet-400"></div>
+                        <p class="mt-2 text-gray-400">Obteniendo información...</p>
+                    </div>
+                    
+                    <div id="geo-results" class="hidden">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Dirección IP</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-ip" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-ip')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">País</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-country" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-country')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Ciudad</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-city" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-city')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Región</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-region" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-region')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">ISP</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-isp" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-isp')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Zona Horaria</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-timezone" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-timezone')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Coordenadas</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-coordinates" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none font-mono"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-coordinates')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-300 mb-2">Código Postal</label>
+                                    <div class="flex gap-2">
+                                        <input 
+                                            id="geo-postal" 
+                                            class="flex-1 p-3 rounded-lg glass-input text-white focus:outline-none"
+                                            readonly
+                                        >
+                                        <button 
+                                            onclick="copyToClipboard('geo-postal')"
+                                            class="px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 rounded-lg glass-border">
+                            <h3 class="text-lg font-medium text-white mb-3">Información Adicional</h3>
+                            <div id="geo-additional-info" class="text-sm text-gray-300">
+                                <!-- Additional info will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="geo-error" class="hidden p-4 rounded-lg bg-red-500/20 border border-red-500/30">
+                        <div class="text-red-300 font-medium">Error al obtener información</div>
+                        <div id="geo-error-message" class="text-red-200 text-sm mt-1"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Utility functions
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.value || element.textContent;
+
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Copiado al portapapeles', 'success');
+            }).catch(() => {
+                showNotification('Error al copiar', 'error');
+            });
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg text-white font-medium transition-all transform translate-x-full opacity-0 ${type === 'success' ? 'bg-green-600' : 'bg-red-600'
+                }`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full', 'opacity-0');
+            }, 100);
+
+            setTimeout(() => {
+                notification.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+    <!-- Include tool functions -->
+    <script src="tools-functions.js"></script>
+</body>
+
+</html>
