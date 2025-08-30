@@ -162,6 +162,23 @@
       opacity: 1;
       transform: translateY(0);
     }
+
+    /* Navbar color transitions */
+    .navbar-links {
+      transition: color 0.3s ease;
+    }
+
+    .navbar-brand {
+      transition: color 0.3s ease;
+    }
+
+    .navbar-white .navbar-links {
+      color: white !important;
+    }
+
+    .navbar-white .navbar-brand {
+      color: white !important;
+    }
   </style>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -196,14 +213,14 @@
         <div
           class="w-6 h-6 bg-violet-500 bg-[url(https://images.unsplash.com/photo-1636690581110-a512fed05fd3?w=1080&amp;q=80)] bg-cover rounded-md">
         </div>
-        <span class="font-medium text-gray-900">HOPSiEdev</span>
+        <span id="navbar-brand" class="navbar-brand font-medium text-gray-900">HOPSiEdev</span>
       </div>
-      <nav class="flex items-center gap-8 text-sm text-gray-600">
-        <a href="#about" class="hover:text-white transition-colors">About</a>
-        <a href="#projects" class="hover:text-white transition-colors">Projects</a>
-        <a href="tools.html" class="hover:text-white transition-colors">Tools</a>
-        <a href="api-status.html" class="hover:text-white transition-colors">API Status</a>
-        <a href="#contact" class="hover:text-white transition-colors">Contact</a>
+      <nav id="navbar-nav" class="flex items-center gap-8 text-sm text-gray-600">
+        <a href="#about" class="navbar-links hover:text-white transition-colors">About</a>
+        <a href="#projects" class="navbar-links hover:text-white transition-colors">Projects</a>
+        <a href="tools.html" class="navbar-links hover:text-white transition-colors">Tools</a>
+        <a href="api-status.html" class="navbar-links hover:text-white transition-colors">API Status</a>
+        <a href="#contact" class="navbar-links hover:text-white transition-colors">Contact</a>
       </nav>
     </div>
   </header>
@@ -480,6 +497,34 @@
     document.querySelectorAll('.animate-on-scroll').forEach((el) => {
       observer.observe(el);
     });
+
+    // Navbar color change on scroll to projects section
+    const projectsSection = document.getElementById('projects');
+    const navbarNav = document.getElementById('navbar-nav');
+    const navbarBrand = document.getElementById('navbar-brand');
+    const header = document.querySelector('header');
+
+    const projectsObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // When projects section is visible, change navbar text to white
+          header.classList.add('navbar-white');
+          console.log('Projects section visible - adding white class');
+        } else {
+          // When projects section is not visible, revert to original color
+          header.classList.remove('navbar-white');
+          console.log('Projects section not visible - removing white class');
+        }
+      });
+    }, {
+      threshold: 0.2, // Trigger when 20% of the projects section is visible
+      rootMargin: '-50px 0px -50px 0px' // Add some margin for better UX
+    });
+
+    // Start observing the projects section
+    if (projectsSection) {
+      projectsObserver.observe(projectsSection);
+    }
 
     // Contact form functionality
     document.getElementById('contact-form').addEventListener('submit', function (e) {
